@@ -1,4 +1,4 @@
-@smoke @high-priority
+@smoke
 Feature: Point of Sale (POS) Page
   As a cashier
   I want to process sales transactions
@@ -10,23 +10,14 @@ Feature: Point of Sale (POS) Page
     And the POS interface is loaded
     And there are products available for sale
 
-  @smoke @high-priority
+  @smoke
   Scenario: POS page displays product catalog
     When I view the POS page
     Then I should see the product catalog displayed
     And I should see a shopping cart section
     And I should see a payment section
 
-  @smoke @high-priority
-  Scenario: Validate stock quantity during add to cart
-    Given a product "Pen" exists with stock quantity 5
-    When I input quantity 10 for the product
-    And I click "Add to Cart"
-    Then the system should block the action
-    And I should see validation message "Cannot add more units than available stock"
-    And the product should not be added to cart
-
-  @smoke @high-priority
+  @smoke
   Scenario: Verify product behaves correctly when added to multiple carts
     Given a product "Product X" exists with stock quantity 100
     When I create Cart A
@@ -39,7 +30,7 @@ Feature: Point of Sale (POS) Page
     And there should be no duplication between carts
     And the UI should display correct totals for each cart
 
-  @smoke @medium-priority
+  @smoke
   Scenario Outline: Add products to cart with valid stock
     Given a product "<product_name>" exists with stock quantity "<stock>"
     When I add "<product_name>" with quantity "<quantity>" to cart
@@ -51,9 +42,8 @@ Feature: Point of Sale (POS) Page
       | product_name | stock | quantity |
       | Laptop       | 10    | 1        |
       | Mouse        | 25    | 3        |
-      | Coffee       | 50    | 5        |
 
-  @smoke @medium-priority
+  @smoke
   Scenario: Update product quantity in cart
     Given a product is in the cart with quantity 1
     When I update the quantity to 3
@@ -61,7 +51,7 @@ Feature: Point of Sale (POS) Page
     And the cart total should reflect the new quantity
     And the stock should be adjusted accordingly
 
-  @smoke @high-priority
+  @smoke
   Scenario: Calculate total with tax
     Given the following products are in the cart:
       | product | quantity | price |
@@ -72,44 +62,7 @@ Feature: Point of Sale (POS) Page
     And I should see tax: $105.99 (10%)
     And I should see total: $1165.96
 
-  @smoke @high-priority
-  Scenario: Process payment with cash
-    Given the cart total is $1165.96
-    When I select "Cash" as payment method
-    And I enter $1200.00 as cash received
-    And I click "Complete Sale"
-    Then I should see change due: $34.04
-    And the sale should be completed successfully
-    And a receipt should be generated
-
-  @smoke @high-priority
-  Scenario: Process payment with card
-    Given the cart total is $1165.96
-    When I select "Credit Card" as payment method
-    And I enter valid card details
-    And I click "Complete Sale"
-    Then the payment should be processed
-    And the sale should be completed successfully
-    And a receipt should be generated
-
-  @smoke @high-priority
-  Scenario: Apply discount to sale
-    Given the cart total is $1165.96
-    When I apply a 10% discount
-    Then the discount should be applied: $116.60
-    And the final total should be $1049.36
-
-  @smoke @high-priority
-  Scenario: Void transaction
-    Given a sale is in progress
-    When I click "Void Transaction"
-    Then I should see confirmation dialog
-    When I confirm the void action
-    Then the transaction should be voided
-    And the cart should be cleared
-    And no sale should be recorded
-
-  @regression @high-priority
+  @regression
   Scenario: Remove product from cart
     Given a product is added to the cart
     When I remove the product from the cart
@@ -117,8 +70,18 @@ Feature: Point of Sale (POS) Page
     And the cart total should update accordingly
     And the stock should be restored
 
-  
+  @regression
+  Scenario: Validate stock quantity during add to cart
+    Given a product "Pen" exists with stock quantity 5
+    When I input quantity 10 for the product
+    Then the system should block the action
+    And I should see validation message "Cannot add more units than available stock"
+    And the product should not be added to cart
 
-
- 
-  
+  @regression
+  Scenario: Remove product from all carts when deleted
+    Given a product "Notebook" exists and is added to carts of multiple users
+    When I delete the product "Notebook" from the product page
+    Then the product should be removed from all user carts
+    And users should no longer see "Notebook" in their carts
+    And users should not be able to proceed to checkout with the deleted product

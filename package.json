@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "@cucumber/cucumber": "^12.1.0"
+  },
+  "dependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^22.2.0"
   }
 }

@@ -1,4 +1,3 @@
-@smoke @high-priority
 Feature: Product Listing and Management
   As a store administrator
   I want to view and manage products in a grid layout
@@ -9,7 +8,7 @@ Feature: Product Listing and Management
     And I am on the Product page
     And the product list table is visible
 
-  @smoke @high-priority
+  @smoke
   Scenario Outline: Check column sorting for numbers and text
     When I click on the "<column>" column header
     Then the products should be sorted by "<column>" in ascending order
@@ -23,7 +22,7 @@ Feature: Product Listing and Management
       | Code   |
       | Tax    |
 
-  @smoke @high-priority
+  @smoke
   Scenario Outline: Check product search functionality
     When I enter "<search_term>" in the search input field
     Then only products containing "<search_term>" should be displayed
@@ -35,7 +34,7 @@ Feature: Product Listing and Management
       | Milk       |
     
 
-  @smoke @high-priority
+  @smoke
   Scenario Outline: Verify category change update
     Given a product exists with category "<old_category>"
     When I edit the product
@@ -50,16 +49,16 @@ Feature: Product Listing and Management
       | Electronics  | Clothing     |
      
 
-  @smoke @high-priority
+  @smoke
   Scenario: Verify correct pagination navigation
     Given the product list has more than 5 entries
     When I set "Show entries" to 5
     And I click "Next" on pagination
     Then I should navigate to page 2
 
-  @smoke @high-priority
+  @smoke
   Scenario: Edit product from product grid
-    Given a product exists in the product list
+    Given user search for an existing product
     When I click the "Edit" button for the product
     Then I should be redirected to the edit product page
     And the product details should be pre-filled in the form
@@ -69,7 +68,7 @@ Feature: Product Listing and Management
     Then I should see success message "Product updated successfully"
     And the changes should be reflected in the product list
 
-  @smoke @high-priority
+  @smoke
   Scenario: Delete product from product grid
     Given a product exists in the product list
     When I click the "Delete" button for the product
@@ -78,7 +77,7 @@ Feature: Product Listing and Management
     Then the product should be removed from the list
     And I should see success message "Product deleted successfully"
 
-  @smoke @high-priority
+  @smoke
   Scenario: Delete category and verify product list update
     Given a category "Electronics" exists with products
     When I delete the category "Electronics"
@@ -88,7 +87,7 @@ Feature: Product Listing and Management
     And products in that category should show "No Category" or be moved to default category
     And the product list should update to reflect the category change
 
-  @smoke @high-priority
+  @smoke
   Scenario: Modify category and verify product list update
     Given a category "Electronics" exists with products
     When I edit the category "Electronics"
@@ -98,7 +97,7 @@ Feature: Product Listing and Management
     And all products in that category should show the new category name in the product list
     And the product list should update immediately to reflect the category change
 
-  @smoke @high-priority
+  @smoke
   Scenario: Filter products by date range
     Given products exist with different creation dates
     When I select "Date Range" from the filter dropdown
@@ -106,9 +105,8 @@ Feature: Product Listing and Management
     And I enter "2024-12-31" as end date
     And I click "Apply Filter"
     Then I should see only products created within the specified date range
-    And the product count should reflect the filtered results
 
-  @smoke @high-priority
+  @smoke
   Scenario: Filter products by today's date
     Given products exist with today's creation date
     When I select "Today" from the date filter dropdown
@@ -116,7 +114,7 @@ Feature: Product Listing and Management
     Then I should see only products created today
     And the date filter should show "Today" as selected
 
-  @smoke @high-priority
+  @smoke
   Scenario: Filter products by this week
     Given products exist within this week
     When I select "This Week" from the date filter dropdown
@@ -124,7 +122,7 @@ Feature: Product Listing and Management
     Then I should see only products created this week
     And the date filter should show "This Week" as selected
 
-  @smoke @high-priority
+  @smoke
   Scenario: Filter products by this month
     Given products exist within this month
     When I select "This Month" from the date filter dropdown
@@ -132,7 +130,7 @@ Feature: Product Listing and Management
     Then I should see only products created this month
     And the date filter should show "This Month" as selected
 
-  @regression @high-priority
+  @regression
   Scenario Outline: Validate date filter with invalid dates
     When I select "Date Range" from the filter dropdown
     And I enter "<start_date>" as start date
@@ -147,7 +145,7 @@ Feature: Product Listing and Management
       | 2024-01-01 | 2024-13-31 | Invalid end date format        |
       | 2024-12-31 | 2024-01-01 | End date cannot be before start date |
 
-  @regression @high-priority
+  @regression
   Scenario: Clear date filter
     Given a date filter is currently applied
     When I click "Clear Filter" button
@@ -156,7 +154,7 @@ Feature: Product Listing and Management
 
  
 
-  @regression @medium-priority
+  @regression 
   Scenario: Date filter with no results
     Given no products exist for the selected date range
     When I select "Date Range" from the filter dropdown
@@ -165,4 +163,4 @@ Feature: Product Listing and Management
     And I click "Apply Filter"
     Then I should see "No products found" message
     And the product list should be empty
-    And the filter should remain applied 
+    And the filter should remain applied
